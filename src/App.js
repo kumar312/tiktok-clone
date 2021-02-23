@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import db from "./firebase";
+import Videos from "./components/Videos";
 
 function App() {
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    // fires once when the component load.
+    db.collection('videos').onSnapshot(snapshot => 
+      setVideos(snapshot.docs.map(doc => doc.data()))
+    )
+  }, [Videos])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    //BEM
+    <div className="app">
+      <div className="app__videos">
+        {videos.map(
+          ({ url, channel, description, song, likes, messages, shares }) => (
+            <Videos
+              url={url}
+              channel={channel}
+              description={description}
+              song={song}
+              likes={likes}
+              messages={messages}
+              shares={shares}
+            />
+          )
+        )}
+        
+      </div>
     </div>
   );
 }
